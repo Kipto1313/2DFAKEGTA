@@ -14,9 +14,10 @@ Use `python main.py --headless` for a short startup smoke test (requires a worki
 ## Controls
 
 - `WASD`: move, `Shift`: sprint, `Space`: dodge
-- Mouse: aim, left click: fire, `R`: reload
-- `1`-`6`: select a weapon, `E`: enter or leave a vehicle
+- Mouse: aim, left click: punch with fists or fire an equipped gun, `R`: reload
+- `1`-`7`: select fists or a weapon, `E`: enter or leave a vehicle
+- `Enter`: restart after being wasted
 - `F`: interact with the current mission objective, `F5`: save, `F9`: load
 - `Esc`: quit
 
-The prototype includes a scrollable procedural city, five mission arcs and the final choice, combat, enemy investigation/pursuit, traffic, drivable cars, wanted response, weather and a day/night cycle. Campaign features are intentionally presented as a playable foundation with placeholder art and simplified simulation.
+The prototype includes a scrollable procedural city, a circular street minimap with the current mission marked `M`, five mission arcs and the final choice, combat, enemy investigation/pursuit, traffic, drivable cars, wanted response, weather and a day/night cycle. Most city NPCs are neutral until attacked; aggressive NPCs and police can fight back when provoked. Reaching zero health displays the `WASTED` screen. Campaign features are intentionally presented as a playable foundation with placeholder art and simplified simulation.

@@ -35,6 +35,8 @@ def run():
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                elif event.key == pygame.K_RETURN and world.game_over:
+                    world = GameWorld(*size)
                 elif event.key == pygame.K_SPACE:
                     world.player.dodge(pygame.key.get_pressed())
                 elif event.key == pygame.K_e:
@@ -55,7 +57,7 @@ def run():
                     choice = "JUSTICE" if event.key == pygame.K_j else "REVENGE"
                     world.ending = world.missions.choose(choice, world.player) or ""
                     world.notify(world.ending, 8)
-                elif pygame.K_1 <= event.key <= pygame.K_6:
+                elif pygame.K_1 <= event.key <= pygame.K_7:
                     world.player.select_weapon(event.key - pygame.K_1)
 
         keys = pygame.key.get_pressed()

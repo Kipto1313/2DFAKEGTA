@@ -12,7 +12,7 @@ class Player:
         self.health, self.armor, self.stamina = 100.0, 35.0, 100.0
         self.cash, self.reputation = 280, 0
         self.inventory = ["Phone", "Evidence envelope"]
-        self.unlocked = {"Pistol"}
+        self.unlocked = {"Fists", "Pistol"}
         self.weapons = {spec.name: Weapon(spec) for spec in SPECS}
         self.weapon_index = 0
         self.angle = 0.0

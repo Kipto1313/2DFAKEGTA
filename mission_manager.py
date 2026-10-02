@@ -74,7 +74,9 @@ class MissionManager:
         self.banner_time = 4.0
         if self.mission_index == 0 and self.objective_index == 5:
             for _ in range(4):
-                enemies.append(Enemy(player.x + 90, player.y + 65))
+                enemy = Enemy(player.x + 90, player.y + 65, aggressive=True)
+                enemy.investigate((player.x, player.y))
+                enemies.append(enemy)
         if self.objective_index >= len(self.mission[2]):
             self.objective_index = 0
             completed_index = self.mission_index

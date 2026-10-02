@@ -5,10 +5,12 @@ import random
 
 
 class Enemy:
-    def __init__(self, x, y, police=False, tactical=False):
+    def __init__(self, x, y, police=False, tactical=False, aggressive=False):
         self.x, self.y = float(x), float(y)
         self.police = police
         self.tactical = tactical
+        self.aggressive = aggressive or police or tactical
+        self.angered = False
         self.health = 135 if tactical else (75 if police else 65)
         self.radius = 12
         self.state = "patrol"
@@ -19,16 +21,27 @@ class Enemy:
 
     def investigate(self, point):
         self.target = point
-        self.state = "investigate"
         self.alert_time = 8.0
+        if self.aggressive:
+            self.angered = True
+            self.state = "alert"
+        else:
+            self.state = "investigate"
 
     def update(self, dt, player, bullets, collision_rects):
         self.cooldown = max(0, self.cooldown - dt)
         distance = math.hypot(player.x - self.x, player.y - self.y)
-        if distance < (350 if self.police else 250):
+        if self.police and distance < 350:
+            self.angered = True
+        if self.angered and distance < 550:
             self.state = "alert"
             self.target = (player.x, player.y)
             self.alert_time = 5
+        elif self.angered and self.alert_time > 0:
+            self.alert_time -= dt
+        elif self.angered:
+            self.angered = False
+            self.state = "patrol"
         elif self.alert_time > 0:
             self.alert_time -= dt
         else:
@@ -49,9 +62,9 @@ class Enemy:
                             15 if self.tactical else (8 if self.police else 6)))
             self.cooldown = 1.1 if self.police else 1.45
 
-        if distance < 500:
-            self.state = "alert"
-
     def damage(self, amount):
         self.health -= amount
+        self.angered = True
+        self.alert_time = 5.0
+        self.state = "alert"
         return self.health <= 0

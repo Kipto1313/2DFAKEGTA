@@ -16,9 +16,11 @@ class WeaponSpec:
     spread: float
     speed: float
     color: tuple
+    melee: bool = False
 
 
 SPECS = [
+    WeaponSpec("Fists", 26, .42, 0, 0, 0, 0, 0, (231, 209, 171), True),
     WeaponSpec("Pistol", 27, .28, 12, 60, 1.0, .045, 760, (242, 202, 123)),
     WeaponSpec("Revolver", 48, .55, 6, 36, 1.4, .025, 820, (252, 183, 103)),
     WeaponSpec("SMG", 17, .095, 30, 120, 1.35, .12, 740, (244, 194, 110)),

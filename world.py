@@ -79,6 +79,7 @@ class GameWorld:
         self.message = "ASHPORT CITY  /  SOUTH DISTRICT"
         self.message_time = 5.0
         self.ending = ""
+        self.game_over = False
         self.unlocked_districts = {"SOUTH DISTRICT", "DOWNTOWN", "MIDDLE CLASS", "OUTSKIRTS"}
 
     def _traffic(self):
@@ -113,9 +114,30 @@ class GameWorld:
         self.message, self.message_time = text, duration
 
     def fire(self, target):
+        weapon = self.player.weapon
+        if weapon.spec.melee:
+            if weapon.cooldown or weapon.reload_left:
+                return
+            weapon.cooldown = weapon.spec.fire_delay
+            candidates = []
+            for enemy in self.enemies:
+                dx, dy = enemy.x - self.player.x, enemy.y - self.player.y
+                distance = math.hypot(dx, dy)
+                angle = math.atan2(dy, dx)
+                difference = math.atan2(math.sin(angle - self.player.angle),
+                                        math.cos(angle - self.player.angle))
+                if distance <= 62 and abs(difference) <= .9:
+                    candidates.append((distance, enemy))
+            if candidates:
+                _, enemy = min(candidates, key=lambda candidate: candidate[0])
+                if enemy.damage(weapon.spec.damage):
+                    self.player.cash += 35
+                self.wanted = min(5, max(1, self.wanted + 1))
+                self.crime_clock = 14
+            return
         origin = (self.player.x + math.cos(self.player.angle) * 17,
                   self.player.y + math.sin(self.player.angle) * 17)
-        shots = self.player.weapon.fire(origin, target)
+        shots = weapon.fire(origin, target)
         if not shots:
             return
         self.projectiles.extend(shots)
@@ -149,6 +171,8 @@ class GameWorld:
             self.notify("No vehicle close enough.")
 
     def update(self, dt, keys, mouse_position, firing):
+        if self.game_over:
+            return
         dt = min(dt, .05)
         self.day_time = (self.day_time + dt / 1200) % 24
         self.weather_clock += dt
@@ -248,6 +272,8 @@ class GameWorld:
             elif math.hypot(tx - x, ty - y) < 500:
                 incoming.append((x, y, tx, ty, damage))
         self.enemy_shots = incoming
+        if self.player.health <= 0:
+            self.game_over = True
 
     def draw(self, screen, ui):
         shake_x = random.randint(-3, 3) if self.camera.shake else 0
