@@ -1,0 +1,4 @@
+__pycache__/
+*.py[cod]
+fallen_streets_save.json
+.venv/
